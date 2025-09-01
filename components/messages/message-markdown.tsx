@@ -1,4 +1,5 @@
-import React, { FC } from "react"
+import { ChatbotUIContext } from "@/context/context"
+import React, { FC, useContext } from "react"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 import { MessageCodeBlock } from "./message-codeblock"
@@ -9,6 +10,31 @@ interface MessageMarkdownProps {
 }
 
 export const MessageMarkdown: FC<MessageMarkdownProps> = ({ content }) => {
+  const { setShowDocSidePanel, setDocLink, setDocContent } =
+    useContext(ChatbotUIContext)
+
+  const handleLinkClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const target = e.target as HTMLAnchorElement
+    const href = target.getAttribute("href")
+
+    if (href && !href.startsWith("http")) {
+      e.preventDefault()
+
+      try {
+        const response = await fetch(href)
+        if (!response.ok) {
+          throw new Error("Network response was not ok")
+        }
+        const content = await response.text()
+        setDocContent(content)
+        setDocLink(href)
+        setShowDocSidePanel(true)
+      } catch (error) {
+        console.error("Failed to fetch document:", error)
+      }
+    }
+  }
+
   return (
     <MessageMarkdownMemoized
       className="prose dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 min-w-full space-y-6 break-words"
@@ -19,6 +45,9 @@ export const MessageMarkdown: FC<MessageMarkdownProps> = ({ content }) => {
         },
         img({ node, ...props }) {
           return <img className="max-w-[67%]" {...props} />
+        },
+        a({ node, ...props }) {
+          return <a {...props} onClick={handleLinkClick} />
         },
         code({ node, className, children, ...props }) {
           const childArray = React.Children.toArray(children)

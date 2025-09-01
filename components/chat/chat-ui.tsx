@@ -1,6 +1,7 @@
 import Loading from "@/app/[locale]/loading"
 import { useChatHandler } from "@/components/chat/chat-hooks/use-chat-handler"
 import { ChatbotUIContext } from "@/context/context"
+import { DocSidePanel } from "./doc-side-panel"
 import { getAssistantToolsByAssistantId } from "@/db/assistant-tools"
 import { getChatFilesByChatId } from "@/db/chat-files"
 import { getChatById } from "@/db/chats"
@@ -186,10 +187,11 @@ export const ChatUI: FC<ChatUIProps> = ({}) => {
   }
 
   return (
-    <div className="relative flex h-full flex-col items-center">
-      <div className="absolute left-4 top-2.5 flex justify-center">
-        <ChatScrollButtons
-          isAtTop={isAtTop}
+    <div className="flex h-full">
+      <div className="relative flex h-full flex-col items-center flex-grow">
+        <div className="absolute left-4 top-2.5 flex justify-center">
+          <ChatScrollButtons
+            isAtTop={isAtTop}
           isAtBottom={isAtBottom}
           isOverflowing={isOverflowing}
           scrollToTop={scrollToTop}
@@ -225,6 +227,8 @@ export const ChatUI: FC<ChatUIProps> = ({}) => {
       <div className="absolute bottom-2 right-2 hidden md:block lg:bottom-4 lg:right-4">
         <ChatHelp />
       </div>
+    </div>
+      <DocSidePanel />
     </div>
   )
 }

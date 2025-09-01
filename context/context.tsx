@@ -136,6 +136,14 @@ interface ChatbotUIContext {
   setSelectedTools: Dispatch<SetStateAction<Tables<"tools">[]>>
   toolInUse: string
   setToolInUse: Dispatch<SetStateAction<string>>
+
+  // DOCUMENT STORE
+  showDocSidePanel: boolean
+  setShowDocSidePanel: Dispatch<SetStateAction<boolean>>
+  docLink: string
+  setDocLink: Dispatch<SetStateAction<string>>
+  docContent: string
+  setDocContent: Dispatch<SetStateAction<string>>
 }
 
 export const ChatbotUIContext = createContext<ChatbotUIContext>({
@@ -261,5 +269,13 @@ export const ChatbotUIContext = createContext<ChatbotUIContext>({
   selectedTools: [],
   setSelectedTools: () => {},
   toolInUse: "none",
-  setToolInUse: () => {}
+  setToolInUse: () => {},
+
+  // DOCUMENT STORE
+  showDocSidePanel: false,
+  setShowDocSidePanel: () => {},
+  docLink: "",
+  setDocLink: () => {},
+  docContent: "",
+  setDocContent: () => {}
 })
