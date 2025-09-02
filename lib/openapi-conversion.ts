@@ -131,9 +131,13 @@ export const openapiToFunctions = async (
           return acc
         }, {})
 
-        schema.properties.parameters = {
-          type: "object",
-          properties: paramProperties
+        for (const param of params) {
+          if (param.schema) {
+            schema.properties[param.name] = {
+              ...param.schema,
+              required: param.required
+            }
+          }
         }
       }
 

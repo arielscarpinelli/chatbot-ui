@@ -10,28 +10,16 @@ interface MessageMarkdownProps {
 }
 
 export const MessageMarkdown: FC<MessageMarkdownProps> = ({ content }) => {
-  const { setShowDocSidePanel, setDocLink, setDocContent } =
-    useContext(ChatbotUIContext)
+  const { setShowDocSidePanel, setDocLink } = useContext(ChatbotUIContext)
 
-  const handleLinkClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const target = e.target as HTMLAnchorElement
     const href = target.getAttribute("href")
 
     if (href && !href.startsWith("http")) {
       e.preventDefault()
-
-      try {
-        const response = await fetch(href)
-        if (!response.ok) {
-          throw new Error("Network response was not ok")
-        }
-        const content = await response.text()
-        setDocContent(content)
-        setDocLink(href)
-        setShowDocSidePanel(true)
-      } catch (error) {
-        console.error("Failed to fetch document:", error)
-      }
+      setDocLink(href)
+      setShowDocSidePanel(true)
     }
   }
 

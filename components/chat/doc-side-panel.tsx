@@ -1,23 +1,32 @@
 "use client"
 
 import { ChatbotUIContext } from "@/context/context"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { MessageMarkdown } from "../messages/message-markdown"
 import { IconX } from "@tabler/icons-react"
 
 export const DocSidePanel = () => {
-  const {
-    showDocSidePanel,
-    setShowDocSidePanel,
-    docLink,
-    docContent
-  } = useContext(ChatbotUIContext)
+  const { showDocSidePanel, setShowDocSidePanel, docLink } =
+    useContext(ChatbotUIContext)
+  const [content, setContent] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const isPDF = docLink.toLowerCase().endsWith(".pdf")
+
+  useEffect(() => {
+    if (docLink && !isPDF) {
+      setLoading(true)
+      fetch(`/api/retrieval/fetch-doc?filePath=${docLink}`)
+        .then(res => res.text())
+        .then(setContent)
+        .catch(console.error)
+        .finally(() => setLoading(false))
+    }
+  }, [docLink, isPDF])
 
   if (!showDocSidePanel) {
     return null
   }
-
-  const isPDF = docLink.toLowerCase().endsWith(".pdf")
 
   return (
     <div className="bg-sidebar border-l-2 p-4 w-[400px] h-full flex flex-col">
@@ -30,10 +39,12 @@ export const DocSidePanel = () => {
       </div>
 
       <div className="flex-grow overflow-y-auto">
-        {isPDF ? (
+        {loading ? (
+          <div>Loading...</div>
+        ) : isPDF ? (
           <iframe src={docLink} className="w-full h-full" />
         ) : (
-          <MessageMarkdown content={docContent} />
+          <MessageMarkdown content={content} />
         )}
       </div>
     </div>
