@@ -1,3 +1,4 @@
+import { MessageMarkdown } from "@/components/messages/message-markdown"
 import { cn } from "@/lib/utils"
 import { Tables } from "@/supabase/types"
 import { ChatFile, MessageImage } from "@/types"
@@ -5,7 +6,7 @@ import { IconFileFilled } from "@tabler/icons-react"
 import Image from "next/image"
 import { FC } from "react"
 import { DrawingCanvas } from "../utility/drawing-canvas"
-import { Dialog, DialogContent } from "./dialog"
+import { Sheet, SheetContent } from "./sheet"
 
 interface FilePreviewProps {
   type: "image" | "file" | "file_item"
@@ -21,13 +22,8 @@ export const FilePreview: FC<FilePreviewProps> = ({
   onOpenChange
 }) => {
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent
-        className={cn(
-          "flex items-center justify-center outline-none",
-          "border-transparent bg-transparent"
-        )}
-      >
+    <Sheet open={isOpen} onOpenChange={onOpenChange}>
+      <SheetContent side="right">
         {(() => {
           if (type === "image") {
             const imageItem = item as MessageImage
@@ -50,8 +46,8 @@ export const FilePreview: FC<FilePreviewProps> = ({
           } else if (type === "file_item") {
             const fileItem = item as Tables<"file_items">
             return (
-              <div className="bg-background text-primary h-[50vh] min-w-[700px] overflow-auto whitespace-pre-wrap rounded-xl p-4">
-                <div>{fileItem.content}</div>
+              <div className="bg-background text-primary h-[50vh] min-w-[700px] overflow-auto rounded-xl p-4">
+                <MessageMarkdown content={fileItem.content || ""} />
               </div>
             )
           } else if (type === "file") {
@@ -62,7 +58,7 @@ export const FilePreview: FC<FilePreviewProps> = ({
             )
           }
         })()}
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   )
 }
