@@ -26,7 +26,7 @@ module.exports = withBundleAnalyzer(
       ]
     },
     experimental: {
-      serverComponentsExternalPackages: ["sharp", "onnxruntime-node"]
+      serverComponentsExternalPackages: ["@huggingface/transformers", "sharp", "onnxruntime-node"]
     }
   })
 )
