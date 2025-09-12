@@ -4,7 +4,13 @@ import { RightSidebar } from "@/components/sidebar/right-sidebar"
 import { Sidebar } from "@/components/sidebar/sidebar"
 import { SidebarSwitcher } from "@/components/sidebar/sidebar-switcher"
 import { Button } from "@/components/ui/button"
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup
+} from "@/components/ui/resizable"
 import { Tabs } from "@/components/ui/tabs"
+import { ChatbotUIContext } from "@/context/context"
 import useHotkey from "@/lib/hooks/use-hotkey"
 import { cn } from "@/lib/utils"
 import { ContentType } from "@/types"
@@ -13,7 +19,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { FC, useContext, useState } from "react"
 import { useSelectFileHandler } from "../chat/chat-hooks/use-select-file-handler"
 import { CommandK } from "../utility/command-k"
-import { ChatbotUIContext } from "@/context/context"
 
 export const SIDEBAR_WIDTH = 350
 
@@ -74,78 +79,79 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
     <div className="flex size-full">
       <CommandK />
 
-      <div
-        className={cn(
-          "duration-200 dark:border-none " + (showSidebar ? "border-r-2" : "")
-        )}
-        style={{
-          // Sidebar
-          minWidth: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
-          maxWidth: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
-          width: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px"
-        }}
-      >
-        {showSidebar && (
-          <Tabs
-            className="flex h-full"
-            value={contentType}
-            onValueChange={tabValue => {
-              setContentType(tabValue as ContentType)
-              router.replace(`${pathname}?tab=${tabValue}`)
-            }}
-          >
-            <SidebarSwitcher onContentTypeChange={setContentType} />
-
-            <Sidebar contentType={contentType} showSidebar={showSidebar} />
-          </Tabs>
-        )}
-      </div>
-
-      <div
-        className="bg-muted/50 relative flex w-screen min-w-[90%] grow flex-col sm:min-w-fit"
-        onDrop={onFileDrop}
-        onDragOver={onDragOver}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-      >
-        {isDragging ? (
-          <div className="flex h-full items-center justify-center bg-black/50 text-2xl text-white">
-            drop file here
-          </div>
-        ) : (
-          children
-        )}
-
-        <Button
-          className={cn(
-            "absolute left-[4px] top-[50%] z-10 size-[32px] cursor-pointer"
-          )}
-          style={{
-            // marginLeft: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
-            transform: showSidebar ? "rotate(180deg)" : "rotate(0deg)"
-          }}
-          variant="ghost"
-          size="icon"
-          onClick={handleToggleSidebar}
+      <ResizablePanelGroup direction="horizontal" autoSaveId="dashboard-layout">
+        <ResizablePanel
+          collapsible
+          collapsedSize={0}
+          defaultSize={showSidebar ? 20 : 0}
+          minSize={15}
+          maxSize={30}
         >
-          <IconChevronCompactRight size={24} />
-        </Button>
-      </div>
+          {showSidebar && (
+            <Tabs
+              className="flex h-full"
+              value={contentType}
+              onValueChange={tabValue => {
+                setContentType(tabValue as ContentType)
+                router.replace(`${pathname}?tab=${tabValue}`)
+              }}
+            >
+              <SidebarSwitcher onContentTypeChange={setContentType} />
 
-      <div
-        className={cn(
-          "duration-200 dark:border-none " +
-            (showFilePreview ? "border-l-2" : "")
+              <Sidebar contentType={contentType} showSidebar={showSidebar} />
+            </Tabs>
+          )}
+        </ResizablePanel>
+
+        <ResizableHandle withHandle />
+
+        <ResizablePanel>
+          <div
+            className="bg-muted/50 relative flex h-full grow flex-col"
+            onDrop={onFileDrop}
+            onDragOver={onDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+          >
+            {isDragging ? (
+              <div className="flex h-full items-center justify-center bg-black/50 text-2xl text-white">
+                drop file here
+              </div>
+            ) : (
+              children
+            )}
+
+            <Button
+              className={cn(
+                "absolute left-[4px] top-[50%] z-10 size-[32px] cursor-pointer"
+              )}
+              style={{
+                transform: showSidebar ? "rotate(180deg)" : "rotate(0deg)"
+              }}
+              variant="ghost"
+              size="icon"
+              onClick={handleToggleSidebar}
+            >
+              <IconChevronCompactRight size={24} />
+            </Button>
+          </div>
+        </ResizablePanel>
+
+        {showFilePreview && (
+          <>
+            <ResizableHandle withHandle />
+            <ResizablePanel
+              collapsible
+              collapsedSize={0}
+              defaultSize={40}
+              minSize={30}
+              maxSize={50}
+            >
+              <RightSidebar />
+            </ResizablePanel>
+          </>
         )}
-        style={{
-          // Right Sidebar
-          minWidth: showFilePreview ? `${SIDEBAR_WIDTH}px` : "0px",
-          maxWidth: showFilePreview ? `${SIDEBAR_WIDTH}px` : "0px",
-          width: showFilePreview ? `${SIDEBAR_WIDTH}px` : "0px"
-        }}
-      >
-        {showFilePreview && <RightSidebar />}
-      </div>
+      </ResizablePanelGroup>
     </div>
   )
 }
