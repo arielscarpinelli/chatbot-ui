@@ -1,5 +1,6 @@
 "use client"
 
+import { RightSidebar } from "@/components/sidebar/right-sidebar"
 import { Sidebar } from "@/components/sidebar/sidebar"
 import { SidebarSwitcher } from "@/components/sidebar/sidebar-switcher"
 import { Button } from "@/components/ui/button"
@@ -9,9 +10,10 @@ import { cn } from "@/lib/utils"
 import { ContentType } from "@/types"
 import { IconChevronCompactRight } from "@tabler/icons-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { FC, useState } from "react"
+import { FC, useContext, useState } from "react"
 import { useSelectFileHandler } from "../chat/chat-hooks/use-select-file-handler"
 import { CommandK } from "../utility/command-k"
+import { ChatbotUIContext } from "@/context/context"
 
 export const SIDEBAR_WIDTH = 350
 
@@ -35,6 +37,7 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
   const [showSidebar, setShowSidebar] = useState(
     localStorage.getItem("showSidebar") === "true"
   )
+  const { showFilePreview } = useContext(ChatbotUIContext)
   const [isDragging, setIsDragging] = useState(false)
 
   const onFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -127,6 +130,21 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
         >
           <IconChevronCompactRight size={24} />
         </Button>
+      </div>
+
+      <div
+        className={cn(
+          "duration-200 dark:border-none " +
+            (showFilePreview ? "border-l-2" : "")
+        )}
+        style={{
+          // Right Sidebar
+          minWidth: showFilePreview ? `${SIDEBAR_WIDTH}px` : "0px",
+          maxWidth: showFilePreview ? `${SIDEBAR_WIDTH}px` : "0px",
+          width: showFilePreview ? `${SIDEBAR_WIDTH}px` : "0px"
+        }}
+      >
+        {showFilePreview && <RightSidebar />}
       </div>
     </div>
   )
