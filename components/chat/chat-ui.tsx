@@ -18,6 +18,7 @@ import { ChatInput } from "./chat-input"
 import { ChatMessages } from "./chat-messages"
 import { ChatScrollButtons } from "./chat-scroll-buttons"
 import { ChatSecondaryButtons } from "./chat-secondary-buttons"
+import { useAssistant } from "./chat-hooks/use-assistant"
 
 interface ChatUIProps {}
 
@@ -33,15 +34,15 @@ export const ChatUI: FC<ChatUIProps> = ({}) => {
     setChatSettings,
     setChatImages,
     assistants,
-    setSelectedAssistant,
     setChatFileItems,
     setChatFiles,
     setShowFilesDisplay,
-    setUseRetrieval,
-    setSelectedTools
+    setUseRetrieval
   } = useContext(ChatbotUIContext)
 
   const { handleNewChat, handleFocusChatInput } = useChatHandler()
+
+  const { handleSelectedAssistant } = useAssistant()
 
   const {
     messagesStartRef,
@@ -161,12 +162,7 @@ export const ChatUI: FC<ChatUIProps> = ({}) => {
       )
 
       if (assistant) {
-        setSelectedAssistant(assistant)
-
-        const assistantTools = (
-          await getAssistantToolsByAssistantId(assistant.id)
-        ).tools
-        setSelectedTools(assistantTools)
+        handleSelectedAssistant(assistant)
       }
     }
 

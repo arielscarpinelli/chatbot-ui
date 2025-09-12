@@ -1,8 +1,4 @@
 import { ChatbotUIContext } from "@/context/context"
-import { getAssistantCollectionsByAssistantId } from "@/db/assistant-collections"
-import { getAssistantFilesByAssistantId } from "@/db/assistant-files"
-import { getAssistantToolsByAssistantId } from "@/db/assistant-tools"
-import { getCollectionFilesByCollectionId } from "@/db/collection-files"
 import useHotkey from "@/lib/hooks/use-hotkey"
 import { LLM_LIST } from "@/lib/models/llm/llm-list"
 import { Tables } from "@/supabase/types"
@@ -21,6 +17,7 @@ import {
 import { Input } from "../ui/input"
 import { QuickSettingOption } from "./quick-setting-option"
 import { set } from "date-fns"
+import { useAssistant } from "./chat-hooks/use-assistant"
 
 interface QuickSettingsProps {}
 
@@ -45,6 +42,8 @@ export const QuickSettings: FC<QuickSettingsProps> = ({}) => {
     selectedWorkspace
   } = useContext(ChatbotUIContext)
 
+  const { handleSelectedAssistant } = useAssistant()
+
   const inputRef = useRef<HTMLInputElement>(null)
 
   const [isOpen, setIsOpen] = useState(false)
@@ -65,34 +64,8 @@ export const QuickSettings: FC<QuickSettingsProps> = ({}) => {
   ) => {
     console.log({ item, contentType })
     if (contentType === "assistants" && item) {
-      setSelectedAssistant(item as Tables<"assistants">)
       setLoading(true)
-      let allFiles = []
-      const assistantFiles = (await getAssistantFilesByAssistantId(item.id))
-        .files
-      allFiles = [...assistantFiles]
-      const assistantCollections = (
-        await getAssistantCollectionsByAssistantId(item.id)
-      ).collections
-      for (const collection of assistantCollections) {
-        const collectionFiles = (
-          await getCollectionFilesByCollectionId(collection.id)
-        ).files
-        allFiles = [...allFiles, ...collectionFiles]
-      }
-      const assistantTools = (await getAssistantToolsByAssistantId(item.id))
-        .tools
-      setSelectedTools(assistantTools)
-      setChatFiles(
-        allFiles.map(file => ({
-          id: file.id,
-          name: file.name,
-          type: file.type,
-          file: null,
-          description: file.description,
-          hidden: item.sharing === "public"
-        }))
-      )
+      await handleSelectedAssistant(item as Tables<"assistants">)
       setLoading(false)
       setSelectedPreset(null)
     } else if (contentType === "presets" && item) {

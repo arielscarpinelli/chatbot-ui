@@ -1,15 +1,11 @@
 import { ChatbotUIContext } from "@/context/context"
-import { getAssistantCollectionsByAssistantId } from "@/db/assistant-collections"
-import { getAssistantFilesByAssistantId } from "@/db/assistant-files"
-import { getAssistantToolsByAssistantId } from "@/db/assistant-tools"
 import { updateChat } from "@/db/chats"
-import { getCollectionFilesByCollectionId } from "@/db/collection-files"
 import { deleteMessagesIncludingAndAfter } from "@/db/messages"
 import { buildFinalMessages } from "@/lib/build-prompt"
 import { Tables } from "@/supabase/types"
 import { ChatMessage, ChatPayload, LLMID, ModelProvider } from "@/types"
 import { useRouter } from "next/navigation"
-import { useContext, useEffect, useRef } from "react"
+import { use, useContext, useEffect, useRef } from "react"
 import { LLM_LIST } from "../../../lib/models/llm/llm-list"
 import {
   createTempMessages,
@@ -21,6 +17,7 @@ import {
   processResponse,
   validateChatSettings
 } from "../chat-helpers"
+import { useAssistant } from "./use-assistant"
 
 export const useChatHandler = () => {
   const router = useRouter()
@@ -69,6 +66,8 @@ export const useChatHandler = () => {
     isToolPickerOpen
   } = useContext(ChatbotUIContext)
 
+  const { handleSelectedAssistant } = useAssistant()
+
   const chatInputRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
@@ -100,49 +99,7 @@ export const useChatHandler = () => {
     setToolInUse("none")
 
     if (selectedAssistant) {
-      setChatSettings({
-        model: selectedAssistant.model as LLMID,
-        prompt: selectedAssistant.prompt,
-        temperature: selectedAssistant.temperature,
-        contextLength: selectedAssistant.context_length,
-        includeProfileContext: selectedAssistant.include_profile_context,
-        includeWorkspaceInstructions:
-          selectedAssistant.include_workspace_instructions,
-        embeddingsProvider: selectedAssistant.embeddings_provider as
-          | "openai"
-          | "local"
-      })
-
-      let allFiles = []
-
-      const assistantFiles = (
-        await getAssistantFilesByAssistantId(selectedAssistant.id)
-      ).files
-      allFiles = [...assistantFiles]
-      const assistantCollections = (
-        await getAssistantCollectionsByAssistantId(selectedAssistant.id)
-      ).collections
-      for (const collection of assistantCollections) {
-        const collectionFiles = (
-          await getCollectionFilesByCollectionId(collection.id)
-        ).files
-        allFiles = [...allFiles, ...collectionFiles]
-      }
-      const assistantTools = (
-        await getAssistantToolsByAssistantId(selectedAssistant.id)
-      ).tools
-
-      setSelectedTools(assistantTools)
-      setChatFiles(
-        allFiles.map(file => ({
-          id: file.id,
-          name: file.name,
-          type: file.type,
-          file: null,
-          description: file.description,
-          hidden: selectedAssistant.sharing === "public"
-        }))
-      )
+      handleSelectedAssistant(selectedAssistant)
     } else if (selectedPreset) {
       setChatSettings({
         model: selectedPreset.model as LLMID,
