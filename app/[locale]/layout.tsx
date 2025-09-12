@@ -2,7 +2,12 @@ import { Toaster } from "@/components/ui/sonner"
 import { GlobalState } from "@/components/utility/global-state"
 import { Providers } from "@/components/utility/providers"
 import TranslationsProvider from "@/components/utility/translations-provider"
+import {
+  dbValidationExecuted,
+  setDbValidationExecuted
+} from "@/lib/global-state"
 import initTranslations from "@/lib/i18n"
+import { validateDbSchema } from "@/lib/server/db-validation"
 import { Database } from "@/supabase/types"
 import { createServerClient } from "@supabase/ssr"
 import { Metadata, Viewport } from "next"
@@ -70,6 +75,11 @@ export default async function RootLayout({
   children,
   params: { locale }
 }: RootLayoutProps) {
+  if (!dbValidationExecuted) {
+    await validateDbSchema()
+    setDbValidationExecuted(true)
+  }
+
   const cookieStore = cookies()
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
