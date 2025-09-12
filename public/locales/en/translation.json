@@ -186,5 +186,13 @@
   "{{fileItemsLength}} Sources from {{fileSummaryLength}} Files": "{{fileItemsLength}} Sources from {{fileSummaryLength}} Files",
   "Save & Send": "Save & Send",
   "Mistral": "Mistral",
-  "Groq": "Groq"
+  "Groq": "Groq",
+  "(optional)": "(optional)",
+  "Description": "Description",
+  "Model is not compatible with tools.": "Model is not compatible with tools.",
+  "Image must be less than 6MB!": "Image must be less than 6MB!",
+  "Unable to create canvas context.": "Unable to create canvas context.",
+  "Files": "Files",
+  "Collection name...": "Collection name...",
+  "Collection description...": "Collection description..."
 }
