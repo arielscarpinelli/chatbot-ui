@@ -194,5 +194,6 @@
   "Unable to create canvas context.": "No se puede crear el contexto del lienzo.",
   "Files": "Archivos",
   "Collection name...": "Nombre de la colección...",
-  "Collection description...": "Descripción de la colección..."
+  "Collection description...": "Descripción de la colección...",
+  "Search {{contentType}}...": "Buscar {{contentType}}..."
 }

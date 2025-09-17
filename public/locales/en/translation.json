@@ -194,5 +194,6 @@
   "Unable to create canvas context.": "Unable to create canvas context.",
   "Files": "Files",
   "Collection name...": "Collection name...",
-  "Collection description...": "Collection description..."
+  "Collection description...": "Collection description...",
+  "Search {{contentType}}...": "Search {{contentType}}..."
 }
