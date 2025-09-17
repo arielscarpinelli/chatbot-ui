@@ -239,10 +239,12 @@ export const ChatFilesDisplay: FC<ChatFilesDisplayProps> = ({}) => {
           <RetrievalToggle />
 
           <div>
-            {t("View {{count}} file", {
-              count: combinedMessageFiles.length
-            })}
-            {combinedMessageFiles.length > 1 ? t("s") : ""}
+            {" "}
+            {combinedMessageFiles.length > 1
+              ? t("View {{count}} files", {
+                  count: combinedMessageFiles.length
+                })
+              : "View file"}
           </div>
 
           <div onClick={e => e.stopPropagation()}>

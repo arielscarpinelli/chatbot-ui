@@ -50,7 +50,7 @@ export const ModelIcon: FC<ModelIconProps> = ({
             theme === "dark" ? "bg-white" : "border-DEFAULT border-black"
           )}
           src={mistral.src}
-          alt={t("Mistral")}
+          alt={"Mistral"}
           width={width}
           height={height}
         />
@@ -63,7 +63,7 @@ export const ModelIcon: FC<ModelIconProps> = ({
             theme === "dark" ? "bg-white" : "border-DEFAULT border-black"
           )}
           src={groq.src}
-          alt={t("Groq")}
+          alt={"Groq"}
           width={width}
           height={height}
         />
