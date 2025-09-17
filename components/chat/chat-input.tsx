@@ -207,7 +207,7 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
             )}
 
             <div className="text-sm font-bold">
-              {t("Talking to {selectedAssistantName}", {
+              {t("Talking to {{selectedAssistantName}}", {
                 selectedAssistantName: selectedAssistant.name
               })}
             </div>

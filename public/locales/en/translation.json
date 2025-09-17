@@ -55,7 +55,7 @@
   "Toggle Sidebar": "Toggle Sidebar",
   "Ask anything. Type @ / # !": "Ask anything. Type @ / # !",
   "Images are not supported for this model. Use models like GPT-4 Vision instead.": "Images are not supported for this model. Use models like GPT-4 Vision instead.",
-  "Talking to {selectedAssistantName}": "Talking to {selectedAssistantName}",
+  "Talking to {{selectedAssistantName}}": "Talking to {{selectedAssistantName}}",
   "Model": "Model",
   "Prompt": "Prompt",
   "You are a helpful AI assistant.": "You are a helpful AI assistant.",
