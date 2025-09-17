@@ -83,9 +83,7 @@ export const CommandK: FC<CommandKProps> = ({}) => {
             </div>
           ) : (
             <div>
-              {t(
-                "Add your OpenAI API key in the settings to unlock CMD+K."
-              )}
+              {t("Add your OpenAI API key in the settings to unlock CMD+K.")}
             </div>
           )}
         </DialogContent>

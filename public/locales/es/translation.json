@@ -195,5 +195,20 @@
   "Files": "Archivos",
   "Collection name...": "Nombre de la colección...",
   "Collection description...": "Descripción de la colección...",
-  "Search {{contentType}}...": "Buscar {{contentType}}..."
+  "Search {{contentType}}...": "Buscar {{contentType}}...",
+  "New Folder": "Nueva Carpeta",
+  "New {{contentType}}": "Nuevo {{contentType}}",
+  "Today": "Hoy", 
+  "Yesterday": "Ayer", 
+  "Previous Week": "La Semana Pasada", 
+  "Older": "Anteriores",
+  "No {{contentType}}.": "Sin {{contentType}}.",
+  "chats": "chats",
+  "presets": "preestablecidos",
+  "prompts": "prompts",
+  "files": "archivos",
+  "collections": "colecciones",
+  "assistants": "asistentes",
+  "tools": "herramientas",
+  "models": "modelos"
 }

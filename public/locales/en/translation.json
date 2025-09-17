@@ -195,5 +195,20 @@
   "Files": "Files",
   "Collection name...": "Collection name...",
   "Collection description...": "Collection description...",
-  "Search {{contentType}}...": "Search {{contentType}}..."
+  "Search {{contentType}}...": "Search {{contentType}}...",
+  "New Folder": "New Folder",
+  "New {{contentType}}": "New {{contentType}}",
+  "Today": "Today", 
+  "Yesterday": "Yesterday", 
+  "Previous Week": "Previous Week",
+  "Older": "Older",
+  "No {{contentType}}.": "No {{contentType}}.",
+  "chats": "chats",
+  "presets": "presets",
+  "prompts": "prompts",
+  "files": "files",
+  "collections": "collections",
+  "assistants": "assistants",
+  "tools": "tools",
+  "models": "models"
 }

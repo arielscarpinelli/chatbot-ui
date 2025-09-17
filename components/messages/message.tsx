@@ -325,10 +325,13 @@ export const Message: FC<MessageProps> = ({
                 className="flex cursor-pointer items-center text-lg hover:opacity-50"
                 onClick={() => setViewSources(true)}
               >
-                {t("{{fileItemsLength}} Sources from {{fileSummaryLength}} Files", {
-                  fileItemsLength: fileItems.length,
-                  fileSummaryLength: Object.keys(fileSummary).length
-                })}
+                {t(
+                  "{{fileItemsLength}} Sources from {{fileSummaryLength}} Files",
+                  {
+                    fileItemsLength: fileItems.length,
+                    fileSummaryLength: Object.keys(fileSummary).length
+                  }
+                )}
                 <IconCaretRightFilled className="ml-1" />
               </div>
             ) : (
@@ -337,10 +340,13 @@ export const Message: FC<MessageProps> = ({
                   className="flex cursor-pointer items-center text-lg hover:opacity-50"
                   onClick={() => setViewSources(false)}
                 >
-                  {t("{{fileItemsLength}} Sources from {{fileSummaryLength}} Files", {
-                    fileItemsLength: fileItems.length,
-                    fileSummaryLength: Object.keys(fileSummary).length
-                  })}
+                  {t(
+                    "{{fileItemsLength}} Sources from {{fileSummaryLength}} Files",
+                    {
+                      fileItemsLength: fileItems.length,
+                      fileSummaryLength: Object.keys(fileSummary).length
+                    }
+                  )}
                   <IconCaretDownFilled className="ml-1" />
                 </div>
 

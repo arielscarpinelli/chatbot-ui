@@ -468,9 +468,7 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                 {useAzureOpenai ? (
                   <>
                     {envKeyMap["azure"] ? (
-                      <Label>
-                        {t("Azure OpenAI API key set by admin.")}
-                      </Label>
+                      <Label>{t("Azure OpenAI API key set by admin.")}</Label>
                     ) : (
                       <Input
                         placeholder={t("Azure OpenAI API Key")}
@@ -609,7 +607,9 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                       <div className="space-y-1">
                         {envKeyMap["azure_embeddings_name"] ? (
                           <Label className="text-xs">
-                            {t("Azure Embeddings deployment name set by admin.")}
+                            {t(
+                              "Azure Embeddings deployment name set by admin."
+                            )}
                           </Label>
                         ) : (
                           <>
@@ -618,7 +618,9 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                             </Label>
 
                             <Input
-                              placeholder={t("Azure Embeddings Deployment Name")}
+                              placeholder={t(
+                                "Azure Embeddings Deployment Name"
+                              )}
                               value={azureEmbeddingsID}
                               onChange={e =>
                                 setAzureEmbeddingsID(e.target.value)

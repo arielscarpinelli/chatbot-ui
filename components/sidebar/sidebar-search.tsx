@@ -20,7 +20,9 @@ export const SidebarSearch: FC<SidebarSearchProps> = ({
 
   return (
     <Input
-      placeholder={t("Search {{contentType}}...", { contentType })}
+      placeholder={t("Search {{contentType}}...", {
+        contentType: t(contentType)
+      })}
       value={searchTerm}
       onChange={e => setSearchTerm(e.target.value)}
     />
