@@ -55,7 +55,7 @@
   "Toggle Sidebar": "Alternar barra lateral",
   "Ask anything. Type @ / # !": "Pregunta cualquier cosa. Escribe @ / # !",
   "Images are not supported for this model. Use models like GPT-4 Vision instead.": "Las imágenes no son compatibles con este modelo. Usa modelos como GPT-4 Vision en su lugar.",
-  "Talking to {selectedAssistantName}": "Hablando con {selectedAssistantName}",
+  "Talking to {{selectedAssistantName}}": "Hablando con {{selectedAssistantName}}",
   "Model": "Modelo",
   "Prompt": "Prompt",
   "You are a helpful AI assistant.": "Eres un asistente de IA útil.",
