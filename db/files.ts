@@ -115,14 +115,14 @@ export const createFile = async (
   }
 
   await createFileWorkspace({
-    user_id: createdFile.user_id,
+    user_id: createdFile.user_id!,
     file_id: createdFile.id,
     workspace_id
   })
 
   const filePath = await uploadFile(file, {
     name: createdFile.name,
-    user_id: createdFile.user_id,
+    user_id: createdFile.user_id!,
     file_id: createdFile.name
   })
 
@@ -175,14 +175,14 @@ export const createDocXFile = async (
   }
 
   await createFileWorkspace({
-    user_id: createdFile.user_id,
+    user_id: createdFile.user_id!,
     file_id: createdFile.id,
     workspace_id
   })
 
   const filePath = await uploadFile(file, {
     name: createdFile.name,
-    user_id: createdFile.user_id,
+    user_id: createdFile.user_id!,
     file_id: createdFile.name
   })
 
@@ -235,7 +235,7 @@ export const createFiles = async (
 
   await createFileWorkspaces(
     createdFiles.map(file => ({
-      user_id: file.user_id,
+      user_id: file.user_id!,
       file_id: file.id,
       workspace_id
     }))

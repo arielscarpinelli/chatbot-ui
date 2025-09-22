@@ -110,6 +110,7 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
   const {
     workspaces,
     selectedWorkspace,
+    profile,
     setChats,
     setPresets,
     setPrompts,
@@ -397,7 +398,7 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
 
       for (const file of filesToAdd) {
         await createCollectionFile({
-          user_id: item.user_id,
+          user_id: profile.user_id,
           collection_id: collectionId,
           file_id: file.id
         })
