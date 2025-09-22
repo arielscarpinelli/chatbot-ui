@@ -22,6 +22,7 @@ import { LLMID } from "@/types"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { ReactNode, useContext, useEffect, useState } from "react"
 import Loading from "../loading"
+import { useAssistant } from "@/components/chat/chat-hooks/use-assistant"
 
 interface WorkspaceLayoutProps {
   children: ReactNode
@@ -74,6 +75,8 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     })()
   }, [])
 
+  const { handleSelectedAssistant } = useAssistant()
+
   useEffect(() => {
     ;(async () => await fetchWorkspaceData(workspaceId))()
 
@@ -103,6 +106,10 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     setAssistants(assistants)
 
     for (const assistant of assistants) {
+      if (process.env.NEXT_PUBLIC_FORCE_ASSISTANT === assistant.name) {
+        await handleSelectedAssistant(assistant)
+      }
+
       let url = ""
 
       if (assistant.image_path) {

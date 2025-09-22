@@ -24,7 +24,7 @@ interface SidebarSwitcherProps {
 export const SidebarSwitcher: FC<SidebarSwitcherProps> = ({
   onContentTypeChange
 }) => {
-  return (
+  return process.env.NEXT_PUBLIC_FORCE_ASSISTANT ? null : (
     <div className="flex flex-col justify-between border-r-2 pb-5">
       <TabsList className="bg-background grid h-[440px] grid-rows-7">
         <SidebarSwitchItem

@@ -32,13 +32,17 @@ export default function ChatPage() {
             <Brand theme={theme === "dark" ? "dark" : "light"} />
           </div>
 
-          <div className="absolute left-2 top-2">
-            <QuickSettings />
-          </div>
+          {process.env.NEXT_PUBLIC_FORCE_ASSISTANT ? null : (
+            <>
+              <div className="absolute left-2 top-2">
+                <QuickSettings />
+              </div>
 
-          <div className="absolute right-2 top-2">
-            <ChatSettings />
-          </div>
+              <div className="absolute right-2 top-2">
+                <ChatSettings />
+              </div>
+            </>
+          )}
 
           <div className="flex grow flex-col items-center justify-center" />
 

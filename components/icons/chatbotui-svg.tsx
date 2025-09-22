@@ -6,7 +6,9 @@ interface ChatbotUISVGProps {
 }
 
 export const ChatbotUISVG: FC<ChatbotUISVGProps> = ({ theme, scale = 1 }) => {
-  return (
+  return process.env.NEXT_PUBLIC_BRAND_LOGO_URL ? (
+    <img src={process.env.NEXT_PUBLIC_BRAND_LOGO_URL} />
+  ) : (
     <svg
       width={189 * scale}
       height={194 * scale}
