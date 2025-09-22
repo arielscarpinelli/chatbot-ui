@@ -1,4 +1,4 @@
-import { pipeline } from "@huggingface/transformers"
+import { pipeline } from "@xenova/transformers"
 
 export async function generateLocalEmbedding(content: string) {
   const generateEmbedding = await pipeline(
