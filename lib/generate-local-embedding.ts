@@ -1,4 +1,8 @@
-import { pipeline } from "@xenova/transformers"
+import { pipeline, env } from "@xenova/transformers"
+
+if (process.env.VERCEL === "1") {
+  env.cacheDir = "/tmp/.cache"
+}
 
 export async function generateLocalEmbedding(content: string) {
   const generateEmbedding = await pipeline(
