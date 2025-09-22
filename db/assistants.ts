@@ -87,7 +87,7 @@ export const createAssistant = async (
   }
 
   await createAssistantWorkspace({
-    user_id: createdAssistant.user_id,
+    user_id: createdAssistant.user_id!,
     assistant_id: createdAssistant.id,
     workspace_id
   })
@@ -110,7 +110,7 @@ export const createAssistants = async (
 
   await createAssistantWorkspaces(
     createdAssistants.map(assistant => ({
-      user_id: assistant.user_id,
+      user_id: assistant.user_id!,
       assistant_id: assistant.id,
       workspace_id
     }))
