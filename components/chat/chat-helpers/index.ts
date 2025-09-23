@@ -55,6 +55,7 @@ export const handleRetrieval = async (
   userInput: string,
   newMessageFiles: ChatFile[],
   chatFiles: ChatFile[],
+  chatCollections: Tables<"collections">[],
   embeddingsProvider: "openai" | "local",
   sourceCount: number
 ) => {
@@ -63,6 +64,7 @@ export const handleRetrieval = async (
     body: JSON.stringify({
       userInput,
       fileIds: [...newMessageFiles, ...chatFiles].map(file => file.id),
+      collectionIds: chatCollections.map(collection => collection.id),
       embeddingsProvider,
       sourceCount
     })

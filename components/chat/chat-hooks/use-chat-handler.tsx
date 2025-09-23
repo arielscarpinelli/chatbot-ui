@@ -50,6 +50,8 @@ export const useChatHandler = () => {
     chatImages,
     setChatImages,
     setChatFiles,
+    chatCollections,
+    setChatCollections,
     setNewMessageFiles,
     setShowFilesDisplay,
     newMessageFiles,
@@ -113,28 +115,20 @@ export const useChatHandler = () => {
           | "local"
       })
 
-      let allFiles = []
-
       const assistantFiles = (
         await getAssistantFilesByAssistantId(selectedAssistant.id)
       ).files
-      allFiles = [...assistantFiles]
       const assistantCollections = (
         await getAssistantCollectionsByAssistantId(selectedAssistant.id)
       ).collections
-      for (const collection of assistantCollections) {
-        const collectionFiles = (
-          await getCollectionFilesByCollectionId(collection.id)
-        ).files
-        allFiles = [...allFiles, ...collectionFiles]
-      }
       const assistantTools = (
         await getAssistantToolsByAssistantId(selectedAssistant.id)
       ).tools
 
       setSelectedTools(assistantTools)
+      setChatCollections(assistantCollections)
       setChatFiles(
-        allFiles.map(file => ({
+        assistantFiles.map(file => ({
           id: file.id,
           name: file.name,
           type: file.type,
@@ -142,7 +136,9 @@ export const useChatHandler = () => {
         }))
       )
 
-      if (allFiles.length > 0) setShowFilesDisplay(true)
+      if (assistantFiles.length > 0 || assistantCollections.length > 0) {
+        setShowFilesDisplay(true)
+      }
     } else if (selectedPreset) {
       setChatSettings({
         model: selectedPreset.model as LLMID,
@@ -234,7 +230,9 @@ export const useChatHandler = () => {
       let retrievedFileItems: Tables<"file_items">[] = []
 
       if (
-        (newMessageFiles.length > 0 || chatFiles.length > 0) &&
+        (newMessageFiles.length > 0 ||
+          chatFiles.length > 0 ||
+          chatCollections.length > 0) &&
         useRetrieval
       ) {
         setToolInUse("retrieval")
@@ -243,6 +241,7 @@ export const useChatHandler = () => {
           userInput,
           newMessageFiles,
           chatFiles,
+          chatCollections,
           chatSettings!.embeddingsProvider,
           sourceCount
         )

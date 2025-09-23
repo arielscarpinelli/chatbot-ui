@@ -116,6 +116,8 @@ interface ChatbotUIContext {
   // ATTACHMENTS STORE
   chatFiles: ChatFile[]
   setChatFiles: Dispatch<SetStateAction<ChatFile[]>>
+  chatCollections: Tables<"collections">[]
+  setChatCollections: Dispatch<SetStateAction<Tables<"collections">[]>>
   chatImages: MessageImage[]
   setChatImages: Dispatch<SetStateAction<MessageImage[]>>
   newMessageFiles: ChatFile[]
@@ -242,6 +244,8 @@ export const ChatbotUIContext = createContext<ChatbotUIContext>({
   // ATTACHMENTS STORE
   chatFiles: [],
   setChatFiles: () => {},
+  chatCollections: [],
+  setChatCollections: () => {},
   chatImages: [],
   setChatImages: () => {},
   newMessageFiles: [],

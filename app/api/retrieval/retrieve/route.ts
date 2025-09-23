@@ -6,14 +6,22 @@ import OpenAI from "openai"
 
 export async function POST(request: Request) {
   const json = await request.json()
-  const { userInput, fileIds, embeddingsProvider, sourceCount } = json as {
+  const {
+    userInput,
+    fileIds,
+    collectionIds,
+    embeddingsProvider,
+    sourceCount
+  } = json as {
     userInput: string
     fileIds: string[]
+    collectionIds: string[]
     embeddingsProvider: "openai" | "local"
     sourceCount: number
   }
 
   const uniqueFileIds = [...new Set(fileIds)]
+  const uniqueCollectionIds = [...new Set(collectionIds)]
 
   try {
     const supabaseAdmin = createClient<Database>(
@@ -60,7 +68,8 @@ export async function POST(request: Request) {
         await supabaseAdmin.rpc("match_file_items_openai", {
           query_embedding: openaiEmbedding as any,
           match_count: sourceCount,
-          file_ids: uniqueFileIds
+          file_ids: uniqueFileIds,
+          collection_ids: uniqueCollectionIds
         })
 
       if (openaiError) {
@@ -75,7 +84,8 @@ export async function POST(request: Request) {
         await supabaseAdmin.rpc("match_file_items_local", {
           query_embedding: localEmbedding as any,
           match_count: sourceCount,
-          file_ids: uniqueFileIds
+          file_ids: uniqueFileIds,
+          collection_ids: uniqueCollectionIds
         })
 
       if (localFileItemsError) {
