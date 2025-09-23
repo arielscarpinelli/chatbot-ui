@@ -118,11 +118,13 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   // FILE PREVIEW STORE
   const [showFilePreview, setShowFilePreview] = useState<boolean>(false)
   const [filePreviewItem, setFilePreviewItem] = useState<
-    ChatFile | MessageImage | Tables<"file_items"> | null
+    ChatFile | MessageImage | Tables<"file_items"> | Tables<"files"> | null
   >(null)
   const [filePreviewType, setFilePreviewType] = useState<
     "image" | "file" | "file_item" | null
   >(null)
+  const [filePreviewFileItem, setFilePreviewFileItem] =
+    useState<Tables<"file_items"> | null>(null)
 
   // RETIEVAL STORE
   const [useRetrieval, setUseRetrieval] = useState<boolean>(true)
@@ -328,6 +330,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         setFilePreviewItem,
         filePreviewType,
         setFilePreviewType,
+        filePreviewFileItem,
+        setFilePreviewFileItem,
 
         // RETRIEVAL STORE
         useRetrieval,

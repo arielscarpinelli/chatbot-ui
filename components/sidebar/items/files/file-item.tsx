@@ -1,10 +1,10 @@
 import { FileIcon } from "@/components/ui/file-icon"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ChatbotUIContext } from "@/context/context"
 import { FILE_DESCRIPTION_MAX, FILE_NAME_MAX } from "@/db/limits"
-import { getFileFromStorage } from "@/db/storage/files"
 import { Tables } from "@/supabase/types"
-import { FC, useState } from "react"
+import { FC, useContext, useState } from "react"
 import { SidebarItem } from "../all/sidebar-display-item"
 
 interface FileItemProps {
@@ -12,13 +12,17 @@ interface FileItemProps {
 }
 
 export const FileItem: FC<FileItemProps> = ({ file }) => {
+  const { setFilePreviewItem, setShowFilePreview, setFilePreviewType } =
+    useContext(ChatbotUIContext)
+
   const [name, setName] = useState(file.name)
   const [isTyping, setIsTyping] = useState(false)
   const [description, setDescription] = useState(file.description)
 
-  const getLinkAndView = async () => {
-    const link = await getFileFromStorage(file.file_path)
-    window.open(link, "_blank")
+  const handleViewFile = () => {
+    setFilePreviewItem(file)
+    setFilePreviewType("file")
+    setShowFilePreview(true)
   }
 
   return (
@@ -32,7 +36,7 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
         <>
           <div
             className="cursor-pointer underline hover:opacity-50"
-            onClick={getLinkAndView}
+            onClick={handleViewFile}
           >
             View {file.name}
           </div>
