@@ -1,23 +1,15 @@
-import { pipeline, env } from "@xenova/transformers"
-
-if (process.env.VERCEL === "1") {
-  env.cacheDir = "/tmp/.cache"
-}
-
 export async function generateLocalEmbedding(content: string) {
-  const generateEmbedding = await pipeline(
-    "feature-extraction",
-    "Snowflake/snowflake-arctic-embed-l-v2.0",
-    // @ts-ignore
-    { dtype: "fp32", use_external_data_format: true }
+  const response = await fetch(
+    "https://router.huggingface.co/hf-inference/models/Snowflake/snowflake-arctic-embed-l-v2.0/pipeline/feature-extraction",
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.HF_TOKEN}`,
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify({ inputs: content })
+    }
   )
-
-  const output = await generateEmbedding(content, {
-    pooling: "mean",
-    normalize: true
-  })
-
-  const embedding = Array.from(output.data)
-
-  return embedding
+  const result = await response.json()
+  return result
 }
