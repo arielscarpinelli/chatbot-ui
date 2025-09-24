@@ -10,7 +10,7 @@ export const getCollectionFilesByCollectionId = async (
       `
         id, 
         name, 
-        files ( id, name, type, description )
+        files ( id, name, type, description, file_path )
       `
     )
     .eq("id", collectionId)

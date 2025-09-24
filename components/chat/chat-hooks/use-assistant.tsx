@@ -53,6 +53,7 @@ export const useAssistant = () => {
         name: file.name,
         type: file.type,
         file: null,
+        file_path: file.file_path,
         description: file.description,
         hidden: assistant.sharing === "public"
       }))
