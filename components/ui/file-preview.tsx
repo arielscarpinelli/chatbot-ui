@@ -10,7 +10,6 @@ import { FC, useContext, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { DrawingCanvas } from "../utility/drawing-canvas"
 import { Skeleton } from "./skeleton"
-import { cat } from "@xenova/transformers"
 
 interface FilePreviewProps {
   type: "image" | "file" | "file_item" | null
@@ -56,20 +55,53 @@ export const FilePreview: FC<FilePreviewProps> = ({ type, item }) => {
           .filter(key => validHeaders.includes(key))
           .map(key => metadata[key])
 
-        const firstHeader = headers[headers.length - 1]
+        const firstHeader = headers.length && headers[headers.length - 1]
 
         if (firstHeader) {
           const elements = scrollRef.current.querySelectorAll(
             "h1, h2, h3, h4, h5, h6"
           )
-          const targetElement = Array.from(elements).find(element =>
-            element.textContent?.includes(firstHeader)
-          )
+          const elementsArray = Array.from(elements)
+          const targetElements = elementsArray
+            .map((element, index) => ({ element, index }))
+            .filter(element =>
+              element.element.textContent?.includes(
+                firstHeader.replaceAll("*", "")
+              )
+            )
+
+          if (targetElements.length === 0) {
+            // give up, we can't find what we are looking for
+            setContent(filePreviewFileItem.content || "")
+            return
+          }
+
+          let targetElement
+          if (targetElements.length === 1) {
+            targetElement = targetElements[0].element
+          } else {
+            const secondHeader =
+              headers.length > 1 && headers[headers.length - 2]
+            if (secondHeader) {
+              const filteredBySecond = targetElements.filter(te => {
+                elementsArray.find(
+                  (e, index) =>
+                    e.textContent?.includes(secondHeader.replaceAll("*", "")) &&
+                    index < te.index
+                )
+              })
+
+              targetElement = filteredBySecond.length
+                ? filteredBySecond[0].element
+                : targetElements[0].element
+            } else {
+              targetElement = targetElements[0].element
+            }
+          }
 
           if (targetElement) {
             targetElement.scrollIntoView({
-              block: "start",
-              behavior: "smooth"
+              block: "start"
             })
           }
         }
