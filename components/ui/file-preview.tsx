@@ -30,20 +30,20 @@ export const FilePreview: FC<FilePreviewProps> = ({ type, item }) => {
     if (type === "file" && item) {
       const file = item as Tables<"files">
       setLoading(true)
-      try {
-        getFileFromStorage(file.file_path)
-          .then(url => fetch(url))
-          .then(response => response.text())
-          .then(textContent => {
-            setContent(textContent)
-            setLoading(false)
-          })
-      } catch (error) {
-        if (filePreviewFileItem) {
-          setContent(filePreviewFileItem.content || "")
+      const fetchData = async () => {
+        try {
+          const url = await getFileFromStorage(file.file_path)
+          const response = await fetch(url)
+          setContent(await response.text())
+          setLoading(false)
+        } catch (error) {
+          if (filePreviewFileItem) {
+            setContent(filePreviewFileItem.content || "")
+          }
+          setLoading(false)
         }
-        setLoading(false)
       }
+      fetchData()
     }
   }, [type, item])
 
