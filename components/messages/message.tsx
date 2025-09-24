@@ -66,7 +66,8 @@ export const Message: FC<MessageProps> = ({
     models,
     setShowFilePreview,
     setFilePreviewItem,
-    setFilePreviewType
+    setFilePreviewType,
+    setFilePreviewFileItem
   } = useContext(ChatbotUIContext)
 
   const { handleSendMessage } = useChatHandler()
@@ -368,9 +369,15 @@ export const Message: FC<MessageProps> = ({
                             key={index}
                             className="ml-8 mt-1.5 flex cursor-pointer items-center space-x-2 hover:opacity-50"
                             onClick={() => {
-                              setFilePreviewType("file_item")
-                              setFilePreviewItem(fileItem)
-                              setShowFilePreview(true)
+                              const parentFile = chatFiles.find(
+                                f => f.id === fileItem.file_id
+                              )
+                              if (parentFile) {
+                                setFilePreviewFileItem(fileItem)
+                                setFilePreviewItem(parentFile)
+                                setFilePreviewType("file")
+                                setShowFilePreview(true)
+                              }
                             }}
                           >
                             <div className="text-sm font-normal">
