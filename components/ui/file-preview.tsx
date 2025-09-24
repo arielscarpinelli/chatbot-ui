@@ -10,6 +10,7 @@ import { FC, useContext, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { DrawingCanvas } from "../utility/drawing-canvas"
 import { Skeleton } from "./skeleton"
+import { cat } from "@xenova/transformers"
 
 interface FilePreviewProps {
   type: "image" | "file" | "file_item" | null
@@ -29,13 +30,20 @@ export const FilePreview: FC<FilePreviewProps> = ({ type, item }) => {
     if (type === "file" && item) {
       const file = item as Tables<"files">
       setLoading(true)
-      getFileFromStorage(file.file_path)
-        .then(url => fetch(url))
-        .then(response => response.text())
-        .then(textContent => {
-          setContent(textContent)
-          setLoading(false)
-        })
+      try {
+        getFileFromStorage(file.file_path)
+          .then(url => fetch(url))
+          .then(response => response.text())
+          .then(textContent => {
+            setContent(textContent)
+            setLoading(false)
+          })
+      } catch (error) {
+        if (filePreviewFileItem) {
+          setContent(filePreviewFileItem.content || "")
+        }
+        setLoading(false)
+      }
     }
   }, [type, item])
 
