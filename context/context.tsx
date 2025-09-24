@@ -136,11 +136,7 @@ interface ChatbotUIContext {
     | null
   setFilePreviewItem: Dispatch<
     SetStateAction<
-      | ChatFile
-      | MessageImage
-      | Tables<"file_items">
-      | Tables<"files">
-      | null
+      ChatFile | MessageImage | Tables<"file_items"> | Tables<"files"> | null
     >
   >
   filePreviewType: "image" | "file" | "file_item" | null

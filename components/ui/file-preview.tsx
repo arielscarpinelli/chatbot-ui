@@ -49,8 +49,8 @@ export const FilePreview: FC<FilePreviewProps> = ({ type, item }) => {
           const elements = scrollRef.current.querySelectorAll(
             "h1, h2, h3, h4, h5, h6"
           )
-          const targetElement = Array.from(elements).find(
-            element => element.textContent?.includes(firstHeader)
+          const targetElement = Array.from(elements).find(element =>
+            element.textContent?.includes(firstHeader)
           )
 
           if (targetElement) {

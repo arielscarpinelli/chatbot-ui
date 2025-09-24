@@ -129,7 +129,9 @@ export const ChatUI: FC<ChatUIProps> = ({}) => {
         id: file.id,
         name: file.name,
         type: file.type,
-        file: null
+        file: null,
+        file_path: file.file_path,
+        description: file.description
       }))
     )
 
