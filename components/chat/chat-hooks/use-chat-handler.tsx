@@ -229,14 +229,11 @@ export const useChatHandler = () => {
 
       let generatedText = ""
 
+      const { finalMessages: formattedMessages, usedTokens } =
+        await buildFinalMessages(payload, profile!, chatImages)
+
       if (selectedTools.length > 0) {
         setToolInUse("Tools")
-
-        const formattedMessages = await buildFinalMessages(
-          payload,
-          profile!,
-          chatImages
-        )
 
         const response = await fetch("/api/chat/tools", {
           method: "POST",
@@ -267,6 +264,7 @@ export const useChatHandler = () => {
         if (modelData!.provider === "ollama") {
           generatedText = await handleLocalChat(
             payload,
+            formattedMessages,
             profile!,
             chatSettings!,
             tempAssistantChatMessage,
@@ -280,6 +278,7 @@ export const useChatHandler = () => {
         } else {
           generatedText = await handleHostedChat(
             payload,
+            formattedMessages,
             profile!,
             modelData!,
             tempAssistantChatMessage,
@@ -328,6 +327,7 @@ export const useChatHandler = () => {
         modelData!,
         messageContent,
         generatedText,
+        usedTokens,
         newMessageImages,
         isRegeneration,
         retrievedFileItems,

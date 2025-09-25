@@ -5,10 +5,7 @@ import { createChat } from "@/db/chats"
 import { createMessageFileItems } from "@/db/message-file-items"
 import { createMessages, updateMessage } from "@/db/messages"
 import { uploadMessageImage } from "@/db/storage/message-images"
-import {
-  buildFinalMessages,
-  adaptMessagesForGoogleGemini
-} from "@/lib/build-prompt"
+import { adaptMessagesForGoogleGemini } from "@/lib/build-prompt"
 import { consumeReadableStream } from "@/lib/consume-stream"
 import { Tables, TablesInsert } from "@/supabase/types"
 import {
@@ -22,6 +19,7 @@ import {
 import React from "react"
 import { toast } from "sonner"
 import { v4 as uuidv4 } from "uuid"
+import { encode } from "gpt-tokenizer"
 
 export const validateChatSettings = (
   chatSettings: ChatSettings | null,
@@ -100,7 +98,9 @@ export const createTempMessages = (
       role: "user",
       sequence_number: chatMessages.length,
       updated_at: "",
-      user_id: ""
+      user_id: "",
+      input_tokens: null,
+      output_tokens: null
     },
     fileItems: []
   }
@@ -117,7 +117,9 @@ export const createTempMessages = (
       role: "assistant",
       sequence_number: chatMessages.length + 1,
       updated_at: "",
-      user_id: ""
+      user_id: "",
+      input_tokens: null,
+      output_tokens: null
     },
     fileItems: []
   }
@@ -146,6 +148,7 @@ export const createTempMessages = (
 
 export const handleLocalChat = async (
   payload: ChatPayload,
+  formattedMessages: any[],
   profile: Tables<"profiles">,
   chatSettings: ChatSettings,
   tempAssistantMessage: ChatMessage,
@@ -156,8 +159,6 @@ export const handleLocalChat = async (
   setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>,
   setToolInUse: React.Dispatch<React.SetStateAction<string>>
 ) => {
-  const formattedMessages = await buildFinalMessages(payload, profile, [])
-
   // Ollama API: https://github.com/jmorganca/ollama/blob/main/docs/api.md
   const response = await fetchChatResponse(
     process.env.NEXT_PUBLIC_OLLAMA_URL + "/api/chat",
@@ -189,6 +190,7 @@ export const handleLocalChat = async (
 
 export const handleHostedChat = async (
   payload: ChatPayload,
+  draftMessages: any[],
   profile: Tables<"profiles">,
   modelData: LLM,
   tempAssistantChatMessage: ChatMessage,
@@ -205,8 +207,6 @@ export const handleHostedChat = async (
     modelData.provider === "openai" && profile.use_azure_openai
       ? "azure"
       : modelData.provider
-
-  let draftMessages = await buildFinalMessages(payload, profile, chatImages)
 
   let formattedMessages: any[] = []
   if (provider === "google") {
@@ -394,6 +394,7 @@ export const handleCreateMessages = async (
   modelData: LLM,
   messageContent: string,
   generatedText: string,
+  usedTokens: number,
   newMessageImages: MessageImage[],
   isRegeneration: boolean,
   retrievedFileItems: Tables<"file_items">[],
@@ -412,7 +413,8 @@ export const handleCreateMessages = async (
     model: modelData.modelId,
     role: "user",
     sequence_number: chatMessages.length,
-    image_paths: []
+    image_paths: [],
+    input_tokens: encode(messageContent).length
   }
 
   const finalAssistantMessage: TablesInsert<"messages"> = {
@@ -423,7 +425,9 @@ export const handleCreateMessages = async (
     model: modelData.modelId,
     role: "assistant",
     sequence_number: chatMessages.length + 1,
-    image_paths: []
+    image_paths: [],
+    input_tokens: usedTokens,
+    output_tokens: encode(generatedText).length
   }
 
   let finalChatMessages: ChatMessage[] = []

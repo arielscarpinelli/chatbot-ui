@@ -743,7 +743,9 @@ export type Database = {
           created_at: string
           id: string
           image_paths: string[]
+          input_tokens: number | null
           model: string
+          output_tokens: number | null
           role: string
           sequence_number: number
           updated_at: string | null
@@ -756,7 +758,9 @@ export type Database = {
           created_at?: string
           id?: string
           image_paths: string[]
+          input_tokens?: number | null
           model: string
+          output_tokens?: number | null
           role: string
           sequence_number: number
           updated_at?: string | null
@@ -769,7 +773,9 @@ export type Database = {
           created_at?: string
           id?: string
           image_paths?: string[]
+          input_tokens?: number | null
           model?: string
+          output_tokens?: number | null
           role?: string
           sequence_number?: number
           updated_at?: string | null

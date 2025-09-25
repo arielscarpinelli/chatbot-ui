@@ -91,6 +91,14 @@ export async function buildFinalMessages(
   })
 
   let finalMessages = []
+  let retrievalText
+
+  if (messageFileItems.length > 0) {
+    retrievalText = buildRetrievalText(messageFileItems)
+
+    remainingTokens -= encode(retrievalText).length
+    usedTokens += encode(retrievalText).length
+  }
 
   for (let i = processedChatMessages.length - 1; i >= 0; i--) {
     const message = processedChatMessages[i].message
@@ -116,7 +124,9 @@ export async function buildFinalMessages(
     role: "system",
     sequence_number: processedChatMessages.length,
     updated_at: "",
-    user_id: ""
+    user_id: "",
+    input_tokens: PROMPT_TOKENS,
+    output_tokens: null
   }
 
   finalMessages.unshift(tempSystemMessage)
@@ -161,9 +171,7 @@ export async function buildFinalMessages(
     }
   })
 
-  if (messageFileItems.length > 0) {
-    const retrievalText = buildRetrievalText(messageFileItems)
-
+  if (retrievalText) {
     finalMessages[finalMessages.length - 1] = {
       ...finalMessages[finalMessages.length - 1],
       content: `${
@@ -172,7 +180,10 @@ export async function buildFinalMessages(
     }
   }
 
-  return finalMessages
+  return {
+    finalMessages,
+    usedTokens
+  }
 }
 
 function buildRetrievalText(fileItems: Tables<"file_items">[]) {
