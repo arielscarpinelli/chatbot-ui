@@ -7,12 +7,7 @@ import { FilePreview } from "../ui/file-preview"
 interface RightSidebarProps {}
 
 export const RightSidebar: FC<RightSidebarProps> = ({}) => {
-  const {
-    showFilePreview,
-    filePreviewItem,
-    filePreviewType,
-    setShowFilePreview
-  } = useContext(ChatbotUIContext)
+  const { showFilePreview, setShowFilePreview } = useContext(ChatbotUIContext)
 
   if (!showFilePreview) return null
 
@@ -28,7 +23,7 @@ export const RightSidebar: FC<RightSidebarProps> = ({}) => {
         </Button>
       </div>
 
-      <FilePreview item={filePreviewItem} type={filePreviewType} />
+      <FilePreview />
     </div>
   )
 }

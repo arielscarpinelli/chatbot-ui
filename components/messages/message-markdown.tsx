@@ -6,9 +6,23 @@ import { MessageMarkdownMemoized } from "./message-markdown-memoized"
 
 interface MessageMarkdownProps {
   content: string
+  prefixPath?: string
 }
 
-export const MessageMarkdown: FC<MessageMarkdownProps> = ({ content }) => {
+const signImgSrc = (
+  src: string | undefined,
+  prefixPath: string | undefined
+) => {
+  if (src?.startsWith("http") || src?.startsWith("data:")) {
+    return src
+  }
+  return `/api/retrieval/image?filePath=${encodeURIComponent((prefixPath || "") + src || "")}`
+}
+
+export const MessageMarkdown: FC<MessageMarkdownProps> = ({
+  content,
+  prefixPath
+}) => {
   return (
     <MessageMarkdownMemoized
       className="prose dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 min-w-full space-y-6 break-words"
@@ -18,7 +32,7 @@ export const MessageMarkdown: FC<MessageMarkdownProps> = ({ content }) => {
           return <p className="mb-2 last:mb-0">{children}</p>
         },
         img({ node, ...props }) {
-          return <img className="max-w-[67%]" {...props} />
+          return <img {...props} src={signImgSrc(props.src, prefixPath)} />
         },
         code({ node, className, children, ...props }) {
           const childArray = React.Children.toArray(children)
