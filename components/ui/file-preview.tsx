@@ -5,7 +5,15 @@ import { getFileFromStorage } from "@/db/storage/files"
 import { Tables } from "@/supabase/types"
 import { ChatFile, MessageImage } from "@/types"
 import Image from "next/image"
-import { FC, useContext, useEffect, useRef, useState } from "react"
+import {
+  FC,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from "react"
 import { useTranslation } from "react-i18next"
 import { DrawingCanvas } from "../utility/drawing-canvas"
 import { Skeleton } from "./skeleton"
@@ -22,13 +30,19 @@ export const FilePreview: FC<{}> = () => {
     chatFiles
   } = useContext(ChatbotUIContext)
 
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const [scrollRef, setScrollRef] = useState<HTMLDivElement | null>(null)
   const [content, setContent] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(true)
   const [contentUrl, setContentUrl] = useState<string>("")
   const [scrollHeaders, setScrollHeaders] = useState<any[]>([])
 
   const { t } = useTranslation()
+
+  const updateScrollRef = useCallback((node: HTMLDivElement | null) => {
+    if (node !== null) {
+      setScrollRef(node)
+    }
+  }, [])
 
   const showFullContent = (fileItem: Tables<"file_items">) => {
     const parentFile = [...files, ...chatFiles].find(
@@ -74,13 +88,11 @@ export const FilePreview: FC<{}> = () => {
   }, [type, item])
 
   useEffect(() => {
-    if (scrollHeaders.length && scrollRef.current && !loading) {
+    if (scrollHeaders.length && scrollRef && !loading) {
       const firstHeader = scrollHeaders[scrollHeaders.length - 1]
 
       if (firstHeader) {
-        const elements = scrollRef.current.querySelectorAll(
-          "h1, h2, h3, h4, h5, h6"
-        )
+        const elements = scrollRef.querySelectorAll("h1, h2, h3, h4, h5, h6")
         const elementsArray = Array.from(elements)
         const targetElements = elementsArray
           .map((element, index) => ({ element, index }))
@@ -121,7 +133,7 @@ export const FilePreview: FC<{}> = () => {
       }
       setScrollHeaders([])
     }
-  }, [scrollHeaders, loading])
+  }, [scrollHeaders, loading, scrollRef])
 
   if (!type || !item) return null
 
@@ -158,7 +170,7 @@ export const FilePreview: FC<{}> = () => {
       <iframe src={contentUrl} className="size-full" />
     ) : (
       <div
-        ref={scrollRef}
+        ref={updateScrollRef}
         className="bg-background text-primary h-full overflow-auto rounded-xl p-4"
       >
         {loading ? (
