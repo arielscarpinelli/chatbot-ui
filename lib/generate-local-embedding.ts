@@ -1,6 +1,7 @@
 export async function generateLocalEmbedding(content: string) {
   const response = await fetch(
-    "https://router.huggingface.co/hf-inference/models/Snowflake/snowflake-arctic-embed-l-v2.0/pipeline/feature-extraction",
+    process.env.EMBEDDINGS_URL ||
+      "https://router.huggingface.co/hf-inference/models/Snowflake/snowflake-arctic-embed-l-v2.0/pipeline/feature-extraction",
     {
       headers: {
         Authorization: `Bearer ${process.env.HF_TOKEN}`,
