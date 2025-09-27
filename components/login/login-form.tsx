@@ -52,12 +52,14 @@ export const LoginForm = ({
           {t("Login")}
         </SubmitButton>
 
-        <SubmitButton
-          formAction={signUp}
-          className="border-foreground/20 mb-2 rounded-md border px-4 py-2"
-        >
-          {t("Sign Up")}
-        </SubmitButton>
+        {process.env.NEXT_PUBLIC_SIGNUP_DISABLED ? null : (
+          <SubmitButton
+            formAction={signUp}
+            className="border-foreground/20 mb-2 rounded-md border px-4 py-2"
+          >
+            {t("Sign Up")}
+          </SubmitButton>
+        )}
 
         <div className="text-muted-foreground mt-1 flex justify-center text-sm">
           <span className="mr-1">{t("Forgot your password?")}</span>
