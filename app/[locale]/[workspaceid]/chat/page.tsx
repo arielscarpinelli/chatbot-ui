@@ -7,6 +7,7 @@ import { ChatSettings } from "@/components/chat/chat-settings"
 import { ChatUI } from "@/components/chat/chat-ui"
 import { QuickSettings } from "@/components/chat/quick-settings"
 import { Brand } from "@/components/ui/brand"
+import { HamburguerButton } from "@/components/ui/hamburguer-button"
 import { ChatbotUIContext } from "@/context/context"
 import useHotkey from "@/lib/hooks/use-hotkey"
 import { useTheme } from "next-themes"
@@ -32,9 +33,12 @@ export default function ChatPage() {
             <Brand theme={theme === "dark" ? "dark" : "light"} />
           </div>
 
+          <div className="absolute left-2 top-2">
+            <HamburguerButton />
+          </div>
           {process.env.NEXT_PUBLIC_FORCE_ASSISTANT ? null : (
             <>
-              <div className="absolute left-2 top-2">
+              <div className="absolute left-10 top-2">
                 <QuickSettings />
               </div>
 

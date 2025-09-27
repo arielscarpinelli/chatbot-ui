@@ -19,6 +19,7 @@ import { ChatMessages } from "./chat-messages"
 import { ChatScrollButtons } from "./chat-scroll-buttons"
 import { ChatSecondaryButtons } from "./chat-secondary-buttons"
 import { useAssistant } from "./chat-hooks/use-assistant"
+import { HamburguerButton } from "../ui/hamburguer-button"
 
 interface ChatUIProps {}
 
@@ -185,7 +186,8 @@ export const ChatUI: FC<ChatUIProps> = ({}) => {
 
   return (
     <div className="relative flex h-full flex-col items-center">
-      <div className="absolute left-4 top-2.5 flex justify-center">
+      <div className="absolute left-2 top-1 flex items-center justify-center">
+        <HamburguerButton />
         <ChatScrollButtons
           isAtTop={isAtTop}
           isAtBottom={isAtBottom}

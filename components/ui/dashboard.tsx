@@ -9,15 +9,15 @@ import {
   ResizablePanelGroup
 } from "@/components/ui/resizable"
 import { Tabs } from "@/components/ui/tabs"
+import useHotkey from "@/lib/hooks/use-hotkey"
 import { useMediaQuery } from "@/lib/hooks/use-media-query"
 import { cn } from "@/lib/utils"
 import { ContentType } from "@/types"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { FC, useContext, useEffect, useState } from "react"
 import { useSelectFileHandler } from "../chat/chat-hooks/use-select-file-handler"
-import { ChatbotUIContext } from "@/context/context"
 import { CommandK } from "../utility/command-k"
-import { Navbar } from "./navbar"
+import { ChatbotUIContext } from "@/context/context"
 
 export const SIDEBAR_WIDTH = 350
 
@@ -26,6 +26,8 @@ interface DashboardProps {
 }
 
 export const Dashboard: FC<DashboardProps> = ({ children }) => {
+  useHotkey("s", () => setShowSidebar(prevState => !prevState))
+
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -36,8 +38,8 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
   const [contentType, setContentType] = useState<ContentType>(
     tabValue as ContentType
   )
-  const [showSidebar, setShowSidebar] = useState(true)
-  const { showFilePreview } = useContext(ChatbotUIContext)
+  const { showSidebar, setShowSidebar, showFilePreview } =
+    useContext(ChatbotUIContext)
   const [isDragging, setIsDragging] = useState(false)
   const isMobile = useMediaQuery("(max-width: 768px)")
 
@@ -74,24 +76,14 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
     event.preventDefault()
   }
 
-  const handleToggleSidebar = () => {
-    setShowSidebar(prevState => {
-      const newState = !prevState
-      if (!isMobile) {
-        localStorage.setItem("showSidebar", String(newState))
-      }
-      return newState
-    })
-  }
-
   const shouldShowSidebar = showSidebar && !showFilePreview
 
   return (
     <div className="flex size-full">
       {isMobile && shouldShowSidebar && (
         <div
-          className="bg-black/50 absolute inset-0 z-40"
-          onClick={handleToggleSidebar}
+          className="absolute inset-0 z-40 bg-black/50"
+          onClick={() => setShowSidebar(false)}
         />
       )}
       <CommandK />
@@ -100,16 +92,15 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
         <ResizablePanel className={showFilePreview ? "hidden md:flex" : "flex"}>
           <div
             className={cn(
-              "dark:border-none duration-200",
-              isMobile ? "absolute z-50 h-full bg-background" : "relative",
+              "duration-200 dark:border-none",
+              isMobile ? "bg-background absolute z-50 h-full" : "relative",
               shouldShowSidebar && "border-r-2"
             )}
             style={{
-              width: shouldShowSidebar
-                ? isMobile
-                  ? "300px"
-                  : `${SIDEBAR_WIDTH}px`
-                : "0px"
+              // Sidebar
+              minWidth: shouldShowSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
+              maxWidth: shouldShowSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
+              width: shouldShowSidebar ? `${SIDEBAR_WIDTH}px` : "0px"
             }}
           >
             {shouldShowSidebar && (
@@ -129,14 +120,12 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
           </div>
 
           <div
-            className="bg-muted/50 relative flex w-full grow flex-col"
+            className="bg-muted/50 relative w-screen min-w-[90%] grow flex-col sm:flex sm:min-w-fit"
             onDrop={onFileDrop}
             onDragOver={onDragOver}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
           >
-            <Navbar onToggleSidebar={handleToggleSidebar} />
-
             {isDragging ? (
               <div className="flex h-full items-center justify-center bg-black/50 text-2xl text-white">
                 drop file here
