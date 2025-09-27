@@ -9,7 +9,7 @@ import {
 import { updateWorkspace } from "@/db/workspaces"
 import { convertBlobToBase64 } from "@/lib/blob-to-b64"
 import { LLMID } from "@/types"
-import { IconHome, IconSettings } from "@tabler/icons-react"
+import { IconHome, IconLogout, IconSettings } from "@tabler/icons-react"
 import { FC, useContext, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
@@ -30,6 +30,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { TextareaAutosize } from "../ui/textarea-autosize"
 import { WithTooltip } from "../ui/with-tooltip"
 import { DeleteWorkspace } from "./delete-workspace"
+import { supabase } from "@/lib/supabase/browser-client"
+import { useRouter } from "next/navigation"
 
 interface WorkspaceSettingsProps {}
 
@@ -167,6 +169,15 @@ export const WorkspaceSettings: FC<WorkspaceSettingsProps> = ({}) => {
     }
   }
 
+  const router = useRouter()
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    router.push("/login")
+    router.refresh()
+    return
+  }
+
   if (!selectedWorkspace || !profile) return null
 
   return (
@@ -200,6 +211,18 @@ export const WorkspaceSettings: FC<WorkspaceSettingsProps> = ({}) => {
               <div className="text-sm font-light">
                 {t("This is your home workspace for personal use.")}
               </div>
+            )}
+
+            {!process.env.NEXT_PUBLIC_FORCE_ASSISTANT ? null : (
+              <Button
+                tabIndex={-1}
+                className="text-xs"
+                size="sm"
+                onClick={handleSignOut}
+              >
+                <IconLogout className="mr-1" size={20} />
+                {t("Logout")}
+              </Button>
             )}
           </SheetHeader>
 
