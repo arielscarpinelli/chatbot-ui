@@ -3,7 +3,6 @@
 import { RightSidebar } from "@/components/sidebar/right-sidebar"
 import { Sidebar } from "@/components/sidebar/sidebar"
 import { SidebarSwitcher } from "@/components/sidebar/sidebar-switcher"
-import { Button } from "@/components/ui/button"
 import {
   ResizableHandle,
   ResizablePanel,
@@ -11,11 +10,11 @@ import {
 } from "@/components/ui/resizable"
 import { Tabs } from "@/components/ui/tabs"
 import useHotkey from "@/lib/hooks/use-hotkey"
+import { useMediaQuery } from "@/lib/hooks/use-media-query"
 import { cn } from "@/lib/utils"
 import { ContentType } from "@/types"
-import { IconChevronCompactRight } from "@tabler/icons-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { FC, useContext, useState } from "react"
+import { FC, useContext, useEffect, useState } from "react"
 import { useSelectFileHandler } from "../chat/chat-hooks/use-select-file-handler"
 import { CommandK } from "../utility/command-k"
 import { ChatbotUIContext } from "@/context/context"
@@ -39,11 +38,18 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
   const [contentType, setContentType] = useState<ContentType>(
     tabValue as ContentType
   )
-  const [showSidebar, setShowSidebar] = useState(
-    localStorage.getItem("showSidebar") === "true"
-  )
-  const { showFilePreview } = useContext(ChatbotUIContext)
+  const { showSidebar, setShowSidebar, showFilePreview } =
+    useContext(ChatbotUIContext)
   const [isDragging, setIsDragging] = useState(false)
+  const isMobile = useMediaQuery("(max-width: 768px)")
+
+  useEffect(() => {
+    if (isMobile) {
+      setShowSidebar(false)
+    } else {
+      setShowSidebar(localStorage.getItem("showSidebar") === "true")
+    }
+  }, [isMobile])
 
   const onFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault()
@@ -70,23 +76,25 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
     event.preventDefault()
   }
 
-  const handleToggleSidebar = () => {
-    setShowSidebar(prevState => !prevState)
-    localStorage.setItem("showSidebar", String(!showSidebar))
-  }
-
   const shouldShowSidebar = showSidebar && !showFilePreview
 
   return (
     <div className="flex size-full">
+      {isMobile && shouldShowSidebar && (
+        <div
+          className="absolute inset-0 z-40 bg-black/50"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
       <CommandK />
 
       <ResizablePanelGroup direction="horizontal" autoSaveId="dashboard-layout">
         <ResizablePanel className={showFilePreview ? "hidden md:flex" : "flex"}>
           <div
             className={cn(
-              "duration-200 dark:border-none " +
-                (showSidebar ? "border-r-2" : "")
+              "duration-200 dark:border-none",
+              isMobile ? "bg-background absolute z-50 h-full" : "relative",
+              shouldShowSidebar && "border-r-2"
             )}
             style={{
               // Sidebar
@@ -124,23 +132,6 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
               </div>
             ) : (
               children
-            )}
-
-            {!showFilePreview && (
-              <Button
-                className={cn(
-                  "absolute left-[4px] top-[50%] z-10 size-[32px] cursor-pointer"
-                )}
-                style={{
-                  // marginLeft: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
-                  transform: showSidebar ? "rotate(180deg)" : "rotate(0deg)"
-                }}
-                variant="ghost"
-                size="icon"
-                onClick={handleToggleSidebar}
-              >
-                <IconChevronCompactRight size={24} />
-              </Button>
             )}
           </div>
         </ResizablePanel>
