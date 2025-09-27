@@ -50,12 +50,30 @@ export const validateChatSettings = (
 }
 
 export const handleRetrieval = async (
-  userInput: string,
+  newMessage: string,
   newMessageFiles: ChatFile[],
   chatFiles: ChatFile[],
   embeddingsProvider: "openai" | "local",
-  sourceCount: number
+  sourceCount: number,
+  chatMessages: ChatMessage[]
 ) => {
+  let userInput = newMessage
+  let usedTokens = encode(userInput).length
+
+  for (let i = chatMessages.length - 1; i >= 0; i--) {
+    const message = chatMessages[i].message
+    if (message.role === "user") {
+      const content = "\n" + message.content
+      const messageTokens = encode(content).length
+      if (usedTokens + messageTokens <= 8192) {
+        usedTokens += messageTokens
+        userInput += content
+      } else {
+        break
+      }
+    }
+  }
+
   const response = await fetch("/api/retrieval/retrieve", {
     method: "POST",
     body: JSON.stringify({

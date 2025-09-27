@@ -11,16 +11,6 @@ const buildBasePrompt = (
 ) => {
   let fullPrompt = ""
 
-  if (assistant) {
-    fullPrompt += `<INJECT ROLE>\nYou are not an AI. You are ${assistant.name}.\n</INJECT ROLE>\n\n`
-  }
-
-  fullPrompt += `Today is ${new Date().toLocaleDateString()}.\n\n`
-
-  if (profileContext) {
-    fullPrompt += `User Info:\n${profileContext}\n\n`
-  }
-
   if (workspaceInstructions) {
     fullPrompt += `System Instructions:\n${workspaceInstructions}\n\n`
   }
@@ -191,7 +181,7 @@ function buildRetrievalText(fileItems: Tables<"file_items">[]) {
     .map(item => `<BEGIN SOURCE>\n${item.content}\n</END SOURCE>`)
     .join("\n\n")
 
-  return `You may use the following sources if needed to answer the user's question. If you don't know the answer, say "I don't know."\n\n${retrievalText}`
+  return `You MUST use the following sources to answer the user's question. If you don't know the answer, say "No encontré información."\n\n${retrievalText}`
 }
 
 function adaptSingleMessageForGoogleGemini(message: any) {

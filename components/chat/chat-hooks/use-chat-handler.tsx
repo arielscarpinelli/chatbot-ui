@@ -201,7 +201,8 @@ export const useChatHandler = () => {
           newMessageFiles,
           chatFiles,
           chatSettings!.embeddingsProvider,
-          sourceCount
+          sourceCount,
+          chatMessages
         )
       }
 
