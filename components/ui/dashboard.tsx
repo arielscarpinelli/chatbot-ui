@@ -3,22 +3,21 @@
 import { RightSidebar } from "@/components/sidebar/right-sidebar"
 import { Sidebar } from "@/components/sidebar/sidebar"
 import { SidebarSwitcher } from "@/components/sidebar/sidebar-switcher"
-import { Button } from "@/components/ui/button"
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup
 } from "@/components/ui/resizable"
 import { Tabs } from "@/components/ui/tabs"
-import useHotkey from "@/lib/hooks/use-hotkey"
+import { useMediaQuery } from "@/lib/hooks/use-media-query"
 import { cn } from "@/lib/utils"
 import { ContentType } from "@/types"
-import { IconChevronCompactRight } from "@tabler/icons-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { FC, useContext, useState } from "react"
+import { FC, useContext, useEffect, useState } from "react"
 import { useSelectFileHandler } from "../chat/chat-hooks/use-select-file-handler"
-import { CommandK } from "../utility/command-k"
 import { ChatbotUIContext } from "@/context/context"
+import { CommandK } from "../utility/command-k"
+import { Navbar } from "./navbar"
 
 export const SIDEBAR_WIDTH = 350
 
@@ -27,8 +26,6 @@ interface DashboardProps {
 }
 
 export const Dashboard: FC<DashboardProps> = ({ children }) => {
-  useHotkey("s", () => setShowSidebar(prevState => !prevState))
-
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -39,11 +36,18 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
   const [contentType, setContentType] = useState<ContentType>(
     tabValue as ContentType
   )
-  const [showSidebar, setShowSidebar] = useState(
-    localStorage.getItem("showSidebar") === "true"
-  )
+  const [showSidebar, setShowSidebar] = useState(true)
   const { showFilePreview } = useContext(ChatbotUIContext)
   const [isDragging, setIsDragging] = useState(false)
+  const isMobile = useMediaQuery("(max-width: 768px)")
+
+  useEffect(() => {
+    if (isMobile) {
+      setShowSidebar(false)
+    } else {
+      setShowSidebar(localStorage.getItem("showSidebar") === "true")
+    }
+  }, [isMobile])
 
   const onFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault()
@@ -71,28 +75,41 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
   }
 
   const handleToggleSidebar = () => {
-    setShowSidebar(prevState => !prevState)
-    localStorage.setItem("showSidebar", String(!showSidebar))
+    setShowSidebar(prevState => {
+      const newState = !prevState
+      if (!isMobile) {
+        localStorage.setItem("showSidebar", String(newState))
+      }
+      return newState
+    })
   }
 
   const shouldShowSidebar = showSidebar && !showFilePreview
 
   return (
     <div className="flex size-full">
+      {isMobile && shouldShowSidebar && (
+        <div
+          className="bg-black/50 absolute inset-0 z-40"
+          onClick={handleToggleSidebar}
+        />
+      )}
       <CommandK />
 
       <ResizablePanelGroup direction="horizontal" autoSaveId="dashboard-layout">
         <ResizablePanel className={showFilePreview ? "hidden md:flex" : "flex"}>
           <div
             className={cn(
-              "duration-200 dark:border-none " +
-                (showSidebar ? "border-r-2" : "")
+              "dark:border-none duration-200",
+              isMobile ? "absolute z-50 h-full bg-background" : "relative",
+              shouldShowSidebar && "border-r-2"
             )}
             style={{
-              // Sidebar
-              minWidth: shouldShowSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
-              maxWidth: shouldShowSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
-              width: shouldShowSidebar ? `${SIDEBAR_WIDTH}px` : "0px"
+              width: shouldShowSidebar
+                ? isMobile
+                  ? "300px"
+                  : `${SIDEBAR_WIDTH}px`
+                : "0px"
             }}
           >
             {shouldShowSidebar && (
@@ -112,35 +129,20 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
           </div>
 
           <div
-            className="bg-muted/50 relative w-screen min-w-[90%] grow flex-col sm:flex sm:min-w-fit"
+            className="bg-muted/50 relative flex w-full grow flex-col"
             onDrop={onFileDrop}
             onDragOver={onDragOver}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
           >
+            <Navbar onToggleSidebar={handleToggleSidebar} />
+
             {isDragging ? (
               <div className="flex h-full items-center justify-center bg-black/50 text-2xl text-white">
                 drop file here
               </div>
             ) : (
               children
-            )}
-
-            {!showFilePreview && (
-              <Button
-                className={cn(
-                  "absolute left-[4px] top-[50%] z-10 size-[32px] cursor-pointer"
-                )}
-                style={{
-                  // marginLeft: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
-                  transform: showSidebar ? "rotate(180deg)" : "rotate(0deg)"
-                }}
-                variant="ghost"
-                size="icon"
-                onClick={handleToggleSidebar}
-              >
-                <IconChevronCompactRight size={24} />
-              </Button>
             )}
           </div>
         </ResizablePanel>
